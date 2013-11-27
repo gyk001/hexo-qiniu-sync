@@ -1,0 +1,37 @@
+{
+  "name": "hexo-qiniu-sync",
+  "version": "0.0.1",
+  "description": "hexo qiniu static files sync plugin",
+  "main": "index.js",
+  "dependencies": {
+    "watch": "0.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gyk001/hexo-qiniu-sync.git"
+  },
+  "keywords": [
+    "Hexo",
+    "qiniu",
+    "sync",
+    "static",
+    "image",
+    "javascripts",
+    "stylesheet"
+  ],
+  "author": {
+    "name": "Guo Yukun"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gyk001/hexo-qiniu-sync/issues"
+  },
+  "readme": "## Introduction\n\nThis is a [hexo](https://github.com/tommy351/hexo)\ntag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)\n\n**The point is you don't need upload files to qiniu manual**\n\n**this plugin will sync files to qiniu for you automatically**\n\n## Installation\n\nTo install, run the following command in the root directory of hexo:\n```\nnpm install hexo-qiniu-sync --save\n```\n\nAnd add this plugin in your ``_config.yml``.\n\n```\nplugins:\n  - hexo-qiniu-sync\n```\n## Configuration\n\n``` \nqiniu:\n  bucket: gyk001\n  image:\n    folder: images\n    thumbnail: /thumbnail.jpg\n  js:\n    folder: js\n  css:\n    folder: css\n  sync:\n    local: source/cdn\n    key_store: ~/qiniu_key.json\n```\n\n## Usage\n\n```\n{% qnimg imageFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n{% qnjs jsFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n{% qncss cssFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n```\n## Demo\n\n```\n{% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' %}\n```\n\nwill render to:\n\n```\n<img title=\"图片标题\" alt=\"图片说明\" class=\"class1 class2\" src=\"http://gyk001.u.qiniudn.com/images/test/demo.png/thumbnail.jpg\">\n```\n\n",
+  "readmeFilename": "README.md",
+  "_id": "hexo-qiniu-sync@0.0.1",
+  "_from": "hexo-qiniu-sync@0.0.1"
+}
