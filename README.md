@@ -19,22 +19,10 @@ And add this plugin in your ``_config.yml``.
 ```
 plugins:
   - hexo-qiniu-sync
-```
-## Configuration
 
-``` 
+#hexo-qiniu-sync plugin config
 qiniu:
   bucket: gyk001
-  image:
-    folder: images
-    thumbnail: /thumbnail.jpg
-  js:
-    folder: js
-  css:
-    folder: css
-  sync:
-    local: source/cdn
-    key_store: ~/qiniu_key.json
 ```
 
 ## Usage
@@ -54,4 +42,22 @@ will render to:
 
 ```
 <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png/thumbnail.jpg">
+```
+
+## All Configuration and Default value
+
+``` 
+qiniu:
+  bucket: 
+  offline: false
+  sync: true
+  local_dir: cdn
+  key_store: ~/.qiniu_key.json
+  image: 
+    folder: images
+    thumbnail: 
+  js:
+    folder: js
+  css:
+    folder: css
 ```

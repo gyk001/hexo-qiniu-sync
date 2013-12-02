@@ -4,7 +4,10 @@
   "description": "hexo qiniu static files sync plugin",
   "main": "index.js",
   "dependencies": {
-    "watch": "0.8.0"
+    "watch": "0.8.0",
+    "unzip":"*",
+    "temp":"*",
+    "lodash": "2.2.1"
   },
   "devDependencies": {},
   "scripts": {
