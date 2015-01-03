@@ -1,0 +1,58 @@
+{
+  "name": "hexo-qiniu-sync",
+  "version": "1.0.0",
+  "description": "hexo qiniu static files sync plugin",
+  "main": "index.js",
+  "dependencies": {
+    "chokidar": "^0.12.5",
+    "lodash": "2.2.1",
+    "node-qiniu": "^6.1.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gyk001/hexo-qiniu-sync.git"
+  },
+  "keywords": [
+    "Hexo",
+    "qiniu",
+    "sync",
+    "static",
+    "image",
+    "javascripts",
+    "stylesheet"
+  ],
+  "author": {
+    "name": "Guo Yukun"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gyk001/hexo-qiniu-sync/issues"
+  },
+  "readme": "## Introduction\nThis is a [hexo](https://github.com/tommy351/hexo)\ntag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)\n**The point is you don't need upload files to qiniu manual**\n**this plugin will sync files to qiniu for you automatically**\n## Installation\nTo install, run the following command in the root directory of hexo:\n```\nnpm install hexo-qiniu-sync --save\n```\nAnd add this plugin in your ``_config.yml``.\n```\nplugins:\n  - hexo-qiniu-sync\n#hexo-qiniu-sync plugin config\nqiniu:\n  bucket: gyk001\n```\n## Usage\n```\n{% qnimg imageFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n{% qnjs jsFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n{% qncss cssFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' %}\n```\n## Demo\n```\n{% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' %}\n```\nwill render to:\n```\n<img title=\"图片标题\" alt=\"图片说明\" class=\"class1 class2\" src=\"http://gyk001.u.qiniudn.com/images/test/demo.png/thumbnail.jpg\">\n```\n## All Configuration and Default value\n``` \nqiniu:\n  bucket: \n  offline: false\n  sync: true\n  local_dir: cdn\n  key_store: ~/.qiniu_key.json\n  image: \n    folder: images\n    thumbnail: \n  js:\n    folder: js\n  css:\n    folder: css\n```\n",
+  "readmeFilename": "README.md",
+  "_id": "hexo-qiniu-sync@0.0.1",
+  "_from": "hexo-qiniu-sync@*",
+  "homepage": "https://github.com/gyk001/hexo-qiniu-sync",
+  "dist": {
+    "shasum": "54a6575d0065ee95a45b6a46f098590567004b29",
+    "tarball": "http://registry.npmjs.org/hexo-qiniu-sync/-/hexo-qiniu-sync-0.0.1.tgz"
+  },
+  "_npmVersion": "1.3.14",
+  "_npmUser": {
+    "name": "guoyukun",
+    "email": "gyk001@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "guoyukun",
+      "email": "gyk001@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_shasum": "54a6575d0065ee95a45b6a46f098590567004b29",
+  "_resolved": "https://registry.npmjs.org/hexo-qiniu-sync/-/hexo-qiniu-sync-0.0.1.tgz"
+}
