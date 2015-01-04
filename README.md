@@ -17,6 +17,9 @@ npm install hexo-qiniu-sync --save
 And add this plugin in your ``_config.yml``.
 
 ```
+plugins:
+  - hexo-qiniu-sync
+
 #七牛云存储设置
 ##offline       是否离线. 离线状态将使用本地地址渲染
 ##sync          是否同步
@@ -60,23 +63,29 @@ qiniu:
 will render to:
 
 ```
-<img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png/thumbnail.jpg">
+<img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png">
 ```
 
 ## All Configuration and Default value
 
 ``` 
 qiniu:
-  bucket: 
   offline: false
   sync: true
-  local_dir: cdn
-  key_store: ~/.qiniu_key.json
+  bucket: bucket_name
+  access_key: AccessKey
+  secret_key: SecretKey
+  dirPrefix: static
+  urlPrefix: http://bucket_name.qiniudn.com/static
+  local_dir: source\static
   image: 
     folder: images
-    thumbnail: 
   js:
     folder: js
   css:
     folder: css
 ```
+
+## TODO
+1.thumbnail image.
+2.Static resource directory.
