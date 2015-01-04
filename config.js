@@ -23,11 +23,16 @@ if(qnConfig.offline){
 		throw new Error('bucket and urlPrefix must has one');
 		}else{
 			// 没有配置urlPrefix时根据bucket生成
-			qnConfig.urlPrefix = ['http://',qnConfig.bucket,'.u.qiniudn.com'].join('');
+			qnConfig.urlPrefix = ['http://',qnConfig.bucket,'.qiniudn.com',dirPrefix ? '/' + dirPrefix : ''].join('');
 		}
 	}
 }
-log.i(qnConfig.urlPrefix);
+log.i('-----------------------------------------------------------');
+log.i('qiniu state: '.yellow + (qnConfig.offline ? 'offline' : 'online'));
+log.i('qiniu sync:  '.yellow + (qnConfig.sync ? 'true' : 'false'));
+log.i('qiniu local dir:  '.yellow + qnConfig.local_dir);
+log.i('qiniu url:   '.yellow + qnConfig.urlPrefix);
+log.i('-----------------------------------------------------------');
 module.exports = function(){
 	return qnConfig;
 };

@@ -7,6 +7,7 @@ var route = hexo.route;
 var config = require('./config')(hexo);
 var cmd = require('./cmd')(hexo);
 var log = hexo.log;
+var package_info = require('./package.json');
 
 // 图片文件夹路径
 var imgPrefix = [config.urlPrefix, '/', config.image.folder].join('');
@@ -40,13 +41,13 @@ var parseAttrs = function(argArray){
 /** 
  * 如标签: {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' %}<br/>
  * 解析结果为:<br/>
- * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png/thumbnail.jpg">
+ * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.qiniudn.com/images/test/demo.png">
  * 注意：参数值有空格的需要用引号将整个配置项括起来
  */
 var qnImgTag = function(args,content){
   var imageName = args[0]; 
   var imgAttr = parseAttrs(args);
-  var process = (imgAttr.normal || config.offline) ? '' : config.image.thumbnail;
+  var process = (imgAttr.normal || config.offline) ? '' : config.image.thumbnail; //##TODO: new version qiniu thumbnail
   delete imgAttr.normal;
   imgAttr.src  = [imgPrefix,'/', imageName , process].join('');
   return htmlTag('img', imgAttr);
@@ -84,31 +85,37 @@ hexo.extend.tag.register('qncss',qnCssTag);
 hexo.extend.helper.register('qnjs', qnJsHelper);
 hexo.extend.helper.register('qnurl', qnUrlHelper);
 
-    
-/**
- * Emoji commands for Hexo.
- * Use `install` option to copy emoji assets on your Hexo blog.
- * Use `remove` option to remove emoji assets from your Hexo blog.
- * 
- * Syntax:
- *   $ hexo emojis [install|remove]
- */
-hexo.extend.console.register('qiniu', 'Qiniu sync', function(args){
+command_options = {
+  desc: package_info.description,
+  usage: ' <argument>',
+  "arguments": [
+    {
+        "name": 'sync',
+        "desc": "Sync your static files to qiniu."
+    },
+    {
+        "name": 'info',
+        "desc": "Displays useful info, like plugin version, aurthor or GitHub links"
+    }
+  ]
+};
+
+hexo.extend.console.register('qiniu2', 'Qiniu sync', command_options, function(args, callback){
   log.d('----- qiniu sync ----');
   log.d(config);
   log.d('----- qiniu sync ----');
+  console.log('\nqiniu sync plugin for hexo\n'.yellow);
   var opt = args._[0] || null; // Option
   switch (opt) {
-    case 'install':
-      cmd.install(); // install qrsync
-      break;
-    case 'remove':
-      cmd.remove(); // remove qrsync
-      break;
     case 'sync':  // sync files now
       cmd.sync();
       break;
+    case 'info':
+      cmd.info();
+      break;
     default:
-      cmd.help();
+      return hexo.call('help', {
+          _: ['qiniu']
+      }, callback);
   }
 });
