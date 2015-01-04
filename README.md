@@ -86,6 +86,6 @@ qiniu:
     folder: css
 ```
 
-## TODO
-1.thumbnail image.
-2.Static resource directory.
+## TODO  
+1.thumbnail image.  
+2.Static resource directory.  
