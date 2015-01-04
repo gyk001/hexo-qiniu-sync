@@ -100,7 +100,7 @@ command_options = {
   ]
 };
 
-hexo.extend.console.register('qiniu2', 'Qiniu sync', command_options, function(args, callback){
+hexo.extend.console.register('qiniu', 'Qiniu sync', command_options, function(args, callback){
   log.d('----- qiniu sync ----');
   log.d(config);
   log.d('----- qiniu sync ----');
