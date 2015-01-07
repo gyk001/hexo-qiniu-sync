@@ -10,11 +10,11 @@ var log = hexo.log;
 var package_info = require('./package.json');
 
 // 图片文件夹路径
-var imgPrefix = [config.urlPrefix, '/', config.image.folder].join('');
+var imgPrefix = [config.url_Prefix, '/', config.image.folder].join('').replace(/\/$/, '');
 // 脚本文件夹路径
-var jsPrefix = [config.urlPrefix, '/', config.js.folder].join('');
+var jsPrefix = [config.url_Prefix, '/', config.js.folder].join('').replace(/\/$/, '');
 // 样式表文件夹路径
-var cssPrefix = [config.urlPrefix, '/', config.css.folder].join('');
+var cssPrefix = [config.url_Prefix, '/', config.css.folder].join('').replace(/\/$/, '');
 
 /** 
  * 将markdown里的tag 数组解析成配置对象<br/>
@@ -76,7 +76,7 @@ var qnJsHelper = function(path){
 };
 
 var qnUrlHelper = function(path){
-  return [config.urlPrefix, '/', path].join('');
+  return [config.url_Prefix, '/', path].join('');
 };
 
 hexo.extend.tag.register('qnimg',qnImgTag);
