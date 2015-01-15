@@ -28,7 +28,7 @@ plugins:
 ##secret_key    上传密钥SecretKey
 ##dirPrefix     上传的资源子目录前缀.如设置，需与urlPrefix同步 
 ##urlPrefix     外链前缀. 
-##local_dir     本地目录. ##TODO
+##local_dir     本地目录.在hexo主目录.
 ##image/js/css  子参数folder为不同静态资源种类的目录名称，一般不需要改动
 qiniu:
   offline: false
@@ -38,7 +38,7 @@ qiniu:
   secret_key: SecretKey
   dirPrefix: static
   urlPrefix: http://bucket_name.qiniudn.com/static
-  local_dir: source\static
+  local_dir: static
   image: 
     folder: images
   js:
@@ -88,4 +88,3 @@ qiniu:
 
 ## TODO  
 1.thumbnail image.  
-2.Static resource directory.  

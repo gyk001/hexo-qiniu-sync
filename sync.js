@@ -4,6 +4,8 @@ var path = require('path');
 var log = hexo.log;
 var config = require('./config')(hexo);
 var chokidar = require('chokidar');
+var publicDir = hexo.public_dir;
+var sourceDir = hexo.source_dir;
 
 var local_dir = config.local_dir ? config.local_dir : 'cdn';
 var dirPrefix = config.dirPrefix ? config.dirPrefix : '';
@@ -72,7 +74,36 @@ var sync = function (dir) {
     }
 };
 
+var symlink = function (publicdir){
+    var dirpath = path.join(publicdir ? publicDir : sourceDir, local_dir);
+    fs.exists(dirpath, function(exists){
+        if (!exists) {
+            fs.symlinkSync(local_dir, dirpath, 'junction');
+        } else {
+            log.w('dir exists,can\'t symlink:' + dirpath);
+        }
+    });
+};
+
+var unsymlink = function (dirpath){
+    fs.exists(dirpath, function(exists){
+        if (exists) {
+            issymlink = fs.lstatSync(dirpath).isSymbolicLink();
+            if (issymlink) {
+                fs.unlink(dirpath);
+            }
+        }
+    });
+};
+
+var unsymlinkall = function (){
+    unsymlink( path.join(publicDir, local_dir));
+    unsymlink( path.join(sourceDir, local_dir));
+};
+
 module.exports = {
     sync:sync,
-    watch:watch
+    watch:watch,
+    symlink:symlink,
+    unsymlink:unsymlinkall
 };
