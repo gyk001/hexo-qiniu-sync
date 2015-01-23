@@ -93,16 +93,16 @@ command_options = {
   usage: ' <argument>',
   "arguments": [
     {
-        "name": 'sync',
+        "name": 'sync | s',
         "desc": "Sync your static files to qiniu."
     },
     {
-        "name": 'sync2',
-        "desc": "Sync your static files to qiniu. It will cover the already uploaded files."
+        "name": 'sync2 | s2',
+        "desc": "Sync your static files to qiniu.(And uploaded update files)"
     },
     {
-        "name": 'info',
-        "desc": "Displays useful info, like plugin version, aurthor or GitHub links"
+        "name": 'info | i',
+        "desc": "Displays plugin version, aurthor or GitHub links"
     }
   ]
 };
@@ -115,12 +115,15 @@ hexo.extend.console.register('qiniu', 'Qiniu sync', command_options, function(ar
   var opt = args._[0] || null; // Option
   switch (opt) {
     case 'sync':  // sync files now
+    case 's':
       cmd.sync();
       break;
     case 'sync2':  // sync files now(cover the already uploaded files)
+    case 's2':
       cmd.sync2();
       break;
     case 'info':
+    case 'i':
       cmd.info();
       break;
     default:
