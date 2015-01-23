@@ -1,7 +1,10 @@
 ## 简介 Introduction
 
+这是一个[hexo](https://github.com/tommy351/hexo)插件，可以让你在文档中嵌入将图片、JS、CSS类型的静态文件。
 This is a [hexo](https://github.com/tommy351/hexo)
 tag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)
+
+**你可以不用手动上传文件到七牛，插件会自动帮你将本地目录的文件同步到七牛。**
 
 **The point is you don't need upload files to qiniu manual**
 
