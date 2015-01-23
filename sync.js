@@ -10,6 +10,7 @@ var sourceDir = hexo.source_dir;
 var local_dir = config.local_dir ? config.local_dir : 'cdn';
 var dirPrefix = config.dirPrefix ? config.dirPrefix : '';
 local_dir = path.join(local_dir, '.').replace(/[\\\/]/g, path.sep);
+var update_exist = config.update_exist ? config.update_exist : false;
 
 // 引入七牛 Node.js SDK
 // 设置全局参数，包括必须的 AccessKey 和 SecretKey，
@@ -31,9 +32,44 @@ var upload_file = function (file,name) {
         if (err) {
             return console.error(err);
         }
-        log.i('upload file'.bold + ': ' + reply.key);
+        log.i('upload file'.green + ': ' + reply.key);
     });
-}
+};
+
+/**
+ * 上传前预先检查
+ * file为本地路径(绝对路径或相对路径都可)
+ * name为远程文件名
+ */
+var check_upload = function (file,name) {
+    var res = imagesBucket.key(name);
+    res.stat(function(err, stat) {
+        if (stat.hash) {
+            log.i('uploaded file'.cyan + ': ' + name);
+            if (!update_exist) {
+                log.i('skip update file'.blue + ': ' + name);
+                return false;
+            }
+            fs.stat(file,function(fserr,fsstat){
+                if(!fserr) {
+                    var ftime = new Date(fsstat.mtime).getTime()*1000;
+                    if (fsstat.size != stat.fsize || ftime > stat.putTime) {
+                        res.remove(function(err) {
+                            if (err) {
+                                console.log(err);
+                                return console.error(err);
+                            }
+                            log.i('again upload file'.yellow + ': ' + name);
+                        });
+                        upload_file(file,name);
+                    }
+                }
+            });
+        } else {
+            upload_file(file,name);
+        }
+    });
+};
 
 /**
  * 文件系统监听
@@ -45,12 +81,12 @@ var watch = function () {
    
     watcher.on('add', function( file) {
         var name = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
-        upload_file(file, name);
+        check_upload(file, name);
     });
    
     watcher.on('change', function(file) {
         var name = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
-        upload_file(file, name);
+        check_upload(file, name);
     });
 };
 
@@ -69,9 +105,17 @@ var sync = function (dir) {
             sync(path.join(dir, files[i]));
         } else  {
             var name = path.join(dirPrefix, fname.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
-            upload_file(fname,name);
+            check_upload(fname,name);
         }
     }
+};
+
+/**
+ * 遍历目录进行上传(覆盖已上传资源)
+ */
+var sync2 = function (dir) {
+    update_exist = true;
+    sync(dir);
 };
 
 var symlink = function (publicdir){
@@ -103,6 +147,7 @@ var unsymlinkall = function (){
 
 module.exports = {
     sync:sync,
+    sync2:sync2,
     watch:watch,
     symlink:symlink,
     unsymlink:unsymlinkall

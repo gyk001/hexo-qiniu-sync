@@ -39,16 +39,19 @@ var parseAttrs = function(argArray){
 }
 
 /** 
- * 如标签: {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' %}<br/>
+ * 如标签: {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' 'extend：?imageView2/2/w/800/h/2000' %}<br/>
  * 解析结果为:<br/>
- * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.qiniudn.com/images/test/demo.png">
+ * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.qiniudn.com/images/test/demo.png?imageView2/2/w/800/h/2000">
  * 注意：参数值有空格的需要用引号将整个配置项括起来
  */
 var qnImgTag = function(args,content){
   var imageName = args[0]; 
   var imgAttr = parseAttrs(args);
-  var process = (imgAttr.normal || config.offline) ? '' : config.image.thumbnail; //##TODO: new version qiniu thumbnail
+  //如果设置了normal标志或者在离线状态，则不使用扩展值。
+  //否则优先使用标签扩展值，最后选择全局配置扩展值
+  var process = (imgAttr.normal || config.offline) ? '' : (imgAttr.extend ? imgAttr.extend : config.image.extend);
   delete imgAttr.normal;
+  delete imgAttr.extend;
   imgAttr.src  = [imgPrefix,'/', imageName , process].join('');
   return htmlTag('img', imgAttr);
 };
@@ -94,6 +97,10 @@ command_options = {
         "desc": "Sync your static files to qiniu."
     },
     {
+        "name": 'sync2',
+        "desc": "Sync your static files to qiniu. It will cover the already uploaded files."
+    },
+    {
         "name": 'info',
         "desc": "Displays useful info, like plugin version, aurthor or GitHub links"
     }
@@ -109,6 +116,9 @@ hexo.extend.console.register('qiniu', 'Qiniu sync', command_options, function(ar
   switch (opt) {
     case 'sync':  // sync files now
       cmd.sync();
+      break;
+    case 'sync2':  // sync files now(cover the already uploaded files)
+      cmd.sync2();
       break;
     case 'info':
       cmd.info();

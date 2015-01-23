@@ -24,7 +24,7 @@ if(qnConfig.offline){
 		throw new Error('bucket and urlPrefix must has one');
 		}else{
 			// 没有配置urlPrefix时根据bucket生成
-			qnConfig.url_Prefix = ['http://',qnConfig.bucket,'.qiniudn.com',dirPrefix ? '/' + dirPrefix : ''].join('');
+			qnConfig.url_Prefix = ['http://',qnConfig.bucket,'.qiniudn.com',qnConfig.dirPrefix ? '/' + qnConfig.dirPrefix : ''].join('');
 		}
 	} else {
 		qnConfig.url_Prefix = qnConfig.urlPrefix;

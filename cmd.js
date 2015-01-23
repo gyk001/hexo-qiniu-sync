@@ -27,6 +27,10 @@ commands.sync = function(){
     sync.sync();
 };
 
+commands.sync2 = function(){
+    sync.sync2();
+};
+
 commands.info = function(){
     console.log('Plugin name'.bold + ': ' + package_info.name);
     console.log('Version'.bold + ': ' + package_info.version);
