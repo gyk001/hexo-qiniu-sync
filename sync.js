@@ -47,8 +47,11 @@ var upload_file = function (file,name) {
 var check_upload = function (file,name) {
     var res = imagesBucket.key(name);
     res.stat(function(err, stat) {
+        if (err) {
+            log.e('get file stat err: '.cyan + name + '\n' + err);
+            return;
+        }
         if (stat.hash) {
-            //log.i('Uploaded file: '.cyan + name);
             if (!update_exist) {
                 return;
             }
@@ -147,6 +150,13 @@ var symlink = function (publicdir){
     fs.exists(dirpath, function(exists){
         if (!exists) {
             fs.symlinkSync(local_dir, dirpath, 'junction');
+            if (!fs.existsSync(dirpath)) {
+                log.e('Can\'t make link fail!'.red);
+                log.w('Maybe do not have permission.'.red);
+                if (process.platform === 'win32') {
+                    log.e('Please ensure that run in administrator mode!'.red);
+                }
+            }
         } else {
             log.w('Dir exists,can\'t symlink:'.red + dirpath);
         }
