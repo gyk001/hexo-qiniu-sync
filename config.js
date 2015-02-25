@@ -1,5 +1,6 @@
 var defaults = require('./default');
 var _ = require('lodash');
+var path = require('path');
 var log = hexo.log;
 
 // 七牛的配置组
@@ -8,7 +9,7 @@ if(qnConfig.offline){
 	// 离线状态不进行同步，覆盖同步配置，
 	qnConfig.sync = false;
 	// 离线状态渲染的的链接路径也是本地的，覆盖urlPrefix配置
-	qnConfig.urlPrefix = [hexo.config.root,qnConfig.local_dir].join('');
+	qnConfig.url_Prefix = path.join(hexo.config.root, qnConfig.local_dir).replace(/\\/g, '/');
 }else{
 	// 在线状态要看是否同步
 	if(qnConfig.sync){
@@ -23,15 +24,17 @@ if(qnConfig.offline){
 		throw new Error('bucket and urlPrefix must has one');
 		}else{
 			// 没有配置urlPrefix时根据bucket生成
-			qnConfig.urlPrefix = ['http://',qnConfig.bucket,'.qiniudn.com',dirPrefix ? '/' + dirPrefix : ''].join('');
+			qnConfig.url_Prefix = ['http://',qnConfig.bucket,'.qiniudn.com',qnConfig.dirPrefix ? '/' + qnConfig.dirPrefix : ''].join('');
 		}
+	} else {
+		qnConfig.url_Prefix = qnConfig.urlPrefix;
 	}
 }
 log.i('-----------------------------------------------------------');
 log.i('qiniu state: '.yellow + (qnConfig.offline ? 'offline' : 'online'));
 log.i('qiniu sync:  '.yellow + (qnConfig.sync ? 'true' : 'false'));
 log.i('qiniu local dir:  '.yellow + qnConfig.local_dir);
-log.i('qiniu url:   '.yellow + qnConfig.urlPrefix);
+log.i('qiniu url:   '.yellow + qnConfig.url_Prefix);
 log.i('-----------------------------------------------------------');
 module.exports = function(){
 	return qnConfig;

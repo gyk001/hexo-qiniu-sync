@@ -1,24 +1,22 @@
-## Introduction
+## 简介
 
-This is a [hexo](https://github.com/tommy351/hexo)
-tag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)
+这是一个[hexo](https://github.com/tommy351/hexo)插件，
+可以让你在文档中入嵌存储在七牛上的图片、JS、CSS类型的静态文件。
 
-**The point is you don't need upload files to qiniu manual**
+**你可以不用手动上传文件到七牛，插件会自动帮你将本地目录的文件同步到七牛。**
 
-**this plugin will sync files to qiniu for you automatically**
+**项目作者：[gyk001](http://www.guoyukun.cn)**  
+**代码贡献：[binsee](https://github.com/binsee)**
 
+## 安装
 
-**author：[gyk001](http://www.guoyukun.cn)**
-**contributors：[binsee](https://github.com/binsee)**
+在你的hexo主目录下运行以下命令进行安装：
 
-## Installation
-
-To install, run the following command in the root directory of hexo:
 ```
 npm install hexo-qiniu-sync --save
 ```
 
-And add this plugin in your ``_config.yml``.
+添加插件配置信息到 ``_config.yml`` 文件中:
 
 ```
 plugins:
@@ -91,7 +89,7 @@ qiniu:
 例如 `?imageView2/2/w/500` 即生成宽度最多500px的缩略图。
 
 
-## Usage
+## 使用标签
 
 ```
 {% qnimg imageFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' [extend:?imageView2/2/w/600 | normal:yes] %}
@@ -113,7 +111,7 @@ qiniu:
 {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' extend:?imageView2/2/w/600 %}
 ``` 
 
-will render to:
+将会被渲染成：
 
 ```
 <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png?imageView2/2/w/600">

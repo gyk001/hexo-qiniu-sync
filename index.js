@@ -10,11 +10,11 @@ var log = hexo.log;
 var package_info = require('./package.json');
 
 // 图片文件夹路径
-var imgPrefix = [config.urlPrefix, '/', config.image.folder].join('');
+var imgPrefix = [config.url_Prefix, '/', config.image.folder].join('').replace(/\/$/, '');
 // 脚本文件夹路径
-var jsPrefix = [config.urlPrefix, '/', config.js.folder].join('');
+var jsPrefix = [config.url_Prefix, '/', config.js.folder].join('').replace(/\/$/, '');
 // 样式表文件夹路径
-var cssPrefix = [config.urlPrefix, '/', config.css.folder].join('');
+var cssPrefix = [config.url_Prefix, '/', config.css.folder].join('').replace(/\/$/, '');
 
 /** 
  * 将markdown里的tag 数组解析成配置对象<br/>
@@ -39,16 +39,19 @@ var parseAttrs = function(argArray){
 }
 
 /** 
- * 如标签: {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' %}<br/>
+ * 如标签: {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' 'extend：?imageView2/2/w/800/h/2000' %}<br/>
  * 解析结果为:<br/>
- * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.qiniudn.com/images/test/demo.png">
+ * <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.qiniudn.com/images/test/demo.png?imageView2/2/w/800/h/2000">
  * 注意：参数值有空格的需要用引号将整个配置项括起来
  */
 var qnImgTag = function(args,content){
   var imageName = args[0]; 
   var imgAttr = parseAttrs(args);
-  var process = (imgAttr.normal || config.offline) ? '' : config.image.thumbnail; //##TODO: new version qiniu thumbnail
+  //如果设置了normal标志或者在离线状态，则不使用扩展值。
+  //否则优先使用标签扩展值，最后选择全局配置扩展值
+  var process = (imgAttr.normal || config.offline) ? '' : (imgAttr.extend ? imgAttr.extend : config.image.extend);
   delete imgAttr.normal;
+  delete imgAttr.extend;
   imgAttr.src  = [imgPrefix,'/', imageName , process].join('');
   return htmlTag('img', imgAttr);
 };
@@ -76,7 +79,7 @@ var qnJsHelper = function(path){
 };
 
 var qnUrlHelper = function(path){
-  return [config.urlPrefix, '/', path].join('');
+  return [config.url_Prefix, '/', path].join('');
 };
 
 hexo.extend.tag.register('qnimg',qnImgTag);
@@ -90,12 +93,16 @@ command_options = {
   usage: ' <argument>',
   "arguments": [
     {
-        "name": 'sync',
+        "name": 'sync | s',
         "desc": "Sync your static files to qiniu."
     },
     {
-        "name": 'info',
-        "desc": "Displays useful info, like plugin version, aurthor or GitHub links"
+        "name": 'sync2 | s2',
+        "desc": "Sync your static files to qiniu.(And uploaded update files)"
+    },
+    {
+        "name": 'info | i',
+        "desc": "Displays plugin version, aurthor or GitHub links"
     }
   ]
 };
@@ -108,9 +115,15 @@ hexo.extend.console.register('qiniu', 'Qiniu sync', command_options, function(ar
   var opt = args._[0] || null; // Option
   switch (opt) {
     case 'sync':  // sync files now
+    case 's':
       cmd.sync();
       break;
+    case 'sync2':  // sync files now(cover the already uploaded files)
+    case 's2':
+      cmd.sync2();
+      break;
     case 'info':
+    case 'i':
       cmd.info();
       break;
     default:
