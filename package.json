@@ -5,6 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "chokidar": "^0.12.5",
+    "colors": "^1.1.0",
+    "hexo-util": "^0.1.6",
     "lodash": "2.2.1",
     "node-qiniu": "^6.1.6"
   },
@@ -26,14 +28,16 @@
     "stylesheet"
   ],
   "author": {
-    "name": "郭玉昆"
-    ,"email" : "gyk001@gmail.com"
-    ,"url" : "http://www.guoyukun.cn/"
+    "name": "郭玉昆",
+    "email": "gyk001@gmail.com",
+    "url": "http://www.guoyukun.cn/"
   },
-  "contributors":[{
-    "name": "杉木",
-    "url" : "http://binsee.github.io"
-  }],
+  "contributors": [
+    {
+      "name": "杉木",
+      "url": "http://binsee.github.io"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/gyk001/hexo-qiniu-sync/issues"

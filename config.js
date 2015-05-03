@@ -4,7 +4,7 @@ var path = require('path');
 var log = hexo.log;
 
 // 七牛的配置组
-var qnConfig = _.defaults( hexo.config.qiniu,defaults);
+var qnConfig = _.defaults(hexo.config.qiniu,defaults);
 if(qnConfig.offline){
 	// 离线状态不进行同步，覆盖同步配置，
 	qnConfig.sync = false;
@@ -36,6 +36,4 @@ log.i('qiniu sync:  '.yellow + (qnConfig.sync ? 'true' : 'false'));
 log.i('qiniu local dir:  '.yellow + qnConfig.local_dir);
 log.i('qiniu url:   '.yellow + qnConfig.url_Prefix);
 log.i('-----------------------------------------------------------');
-module.exports = function(){
-	return qnConfig;
-};
+module.exports = qnConfig;

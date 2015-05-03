@@ -1,11 +1,11 @@
 var fs = require('fs');
 var path = require('path');
 var log = hexo.log;
-var config = require('./config')(hexo);
+var config = require('./config');
 var sync = require('./sync');
 var package_info = require('./package.json');
 
-var commands = module.exports = function(hexo) {
+var commands = module.exports = function() {
     return commands;
 };
 

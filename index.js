@@ -1,13 +1,16 @@
+global.hexo = hexo;
+global.colors = require('colors');
 var fs = require('fs');
 var path = require('path');
 var publicDir = hexo.public_dir;
 var sourceDir = hexo.source_dir;
-var htmlTag = hexo.util.html_tag;
+var htmlTag = require('hexo-util').htmlTag;
 var route = hexo.route;
-var config = require('./config')(hexo);
-var cmd = require('./cmd')(hexo);
+var config = require('./config');
+var cmd = require('./cmd');
 var log = hexo.log;
 var package_info = require('./package.json');
+
 
 // 图片文件夹路径
 var imgPrefix = [config.url_Prefix, '/', config.image.folder].join('').replace(/\/$/, '');
