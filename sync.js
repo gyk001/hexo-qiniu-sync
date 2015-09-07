@@ -105,17 +105,17 @@ var sync = function (dir) {
         dir='';
         log.i('Now start qiniu sync.'.yellow);
     }
-    var files = fs.readdirSync(path.join(local_dir, dir));
-    for(i in files) {
-        var fname = path.join(local_dir, dir, files[i]);
-        var stat = fs.lstatSync(fname);
+    var files = fs.readdirSync(path.join(local_dir,dir));
+    files.forEach(function(file)  {
+        var fname = path.join(local_dir + '', dir + '', file + '');
+	var stat = fs.lstatSync(fname);
         if(stat.isDirectory() == true) {
-            sync(path.join(dir, files[i]));
+            sync(path.join(dir + '', file + ''));
         } else  {
             var name = path.join(dirPrefix, fname.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
             check_upload(fname,name);
         }
-    }
+    })
 };
 
 /**
