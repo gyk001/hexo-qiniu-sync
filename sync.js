@@ -4,6 +4,7 @@ var path = require('path');
 var log = hexo.log;
 var config = require('./config');
 var chokidar = require('chokidar');
+var getEtag = require('./qetag');
 var publicDir = hexo.public_dir;
 var sourceDir = hexo.source_dir;
 
@@ -51,29 +52,31 @@ var check_upload = function (file,name) {
             log.e('get file stat err: '.cyan + name + '\n' + err);
             return;
         }
-        if (stat.hash) {
-            if (!update_exist) {
-                return;
-            }
-            fsstat = fs.lstatSync(file);
-            var ftime = new Date(fsstat.mtime).getTime()*1000;
-            if (fsstat.size != stat.fsize || ftime > stat.putTime) {
-                res.remove(function(err) {
-                    if (err) {
-                        return console.error(err);
-                    }
-                    need_upload_nums++;
-                    if (scan_mode) return;
-                    log.i('Need upload update file: '.yellow + file);
-                });
+
+        getEtag(file, function (hash) {
+            //先判断七牛是否已存在文件
+            if (stat.hash) {
+                if (!update_exist) {
+                    return;
+                }
+                if (stat.hash != hash) {
+                    res.remove(function(err) {
+                        if (err) {
+                            return console.error(err);
+                        }
+                        need_upload_nums++;
+                        if (scan_mode) return;
+                        log.i('Need upload update file: '.yellow + file);
+                    });
+                    upload_file(file,name);
+                }
+            } else {
+                need_upload_nums++;
+                if (scan_mode) return;
+                log.i('Need upload file: '.yellow + file);
                 upload_file(file,name);
             }
-        } else {
-            need_upload_nums++;
-            if (scan_mode) return;
-            log.i('Need upload file: '.yellow + file);
-            upload_file(file,name);
-        }
+        });
     });
 };
 
