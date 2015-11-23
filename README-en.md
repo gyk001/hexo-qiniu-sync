@@ -1,22 +1,29 @@
-## 简介
+## Introduction
 
-这是一个[hexo](https://github.com/tommy351/hexo)插件，
-可以让你在文档中入嵌存储在七牛上的图片、JS、CSS类型的静态文件。
+This is a [hexo](https://github.com/tommy351/hexo)
+tag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)
 
-**你可以不用手动上传文件到七牛，插件会自动帮你将本地目录的文件同步到七牛。**
+**The point is you don't need upload files to qiniu manual**
 
-**项目作者：[gyk001](http://www.guoyukun.cn)**  
-**代码贡献：[binsee](https://github.com/binsee)**
+**this plugin will sync files to qiniu for you automatically**
 
-## 安装
 
-在你的hexo主目录下运行以下命令进行安装：
+**author：[gyk001](http://www.guoyukun.cn)**
+**contributors：**
+  - [binsee](https://github.com/binsee)
+  - [楼教主](https://github.com/52cik)
+  - [robinshen](https://github.com/robinshen)
+  - [Bob Liu](https://github.com/MatrixHero)
+  - [Jinchun Xia](https://github.com/xiajinchun)
 
+## Installation
+
+To install, run the following command in the root directory of hexo:
 ```
 npm install hexo-qiniu-sync --save
 ```
 
-添加插件配置信息到 ``_config.yml`` 文件中:
+And add this plugin in your ``_config.yml``.
 
 ```
 plugins:
@@ -35,6 +42,8 @@ plugins:
 ##image/js/css  子参数folder为不同静态资源种类的目录名称，一般不需要改动
 ##image.extend  这是个特殊参数，用于生成缩略图或加水印等操作。具体请参考http://developer.qiniu.com/docs/v6/api/reference/fop/image/ 
 ##              可使用基本图片处理、高级图片处理、图片水印处理这3个接口。例如 ?imageView2/2/w/500 即生成宽度最多500px的缩略图
+##ignoring_log  忽略文件时是否输出日志
+##ignoring_files要忽略的文件列表，跟hexo的skip_render参数一样支持glob expressions(通配符)，具体看下面例子。
 qiniu:
   offline: false
   sync: true
@@ -52,6 +61,12 @@ qiniu:
     folder: js
   css:
     folder: css
+  ### 忽略文件配置
+  ignoring_log: false
+  ignoring_files:
+    - "**/.DS_Store"
+    - "**/*.tmp"
+    - "**/*.o"
 ```
 
 **这里对配置中的几个需要注意的参数进行说明：**  
@@ -89,7 +104,7 @@ qiniu:
 例如 `?imageView2/2/w/500` 即生成宽度最多500px的缩略图。
 
 
-## 使用标签
+## Usage
 
 ```
 {% qnimg imageFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' [extend:?imageView2/2/w/600 | normal:yes] %}
@@ -111,7 +126,7 @@ qiniu:
 {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' extend:?imageView2/2/w/600 %}
 ``` 
 
-将会被渲染成：
+will render to:
 
 ```
 <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png?imageView2/2/w/600">
