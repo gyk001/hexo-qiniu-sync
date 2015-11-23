@@ -2,11 +2,17 @@ var fs = require('fs');
 var qiniu = require('node-qiniu');
 var path = require('path');
 var log = hexo.log;
+
 var config = require('./config');
 var chokidar = require('chokidar');
 var getEtag = require('./qetag');
+var minimatch = require('minimatch');
+
 var publicDir = hexo.public_dir;
 var sourceDir = hexo.source_dir;
+
+var ignoring_log = config.ignoring_log;
+var ignoring_files = config.ignoring_files || [];
 
 var local_dir = config.local_dir ? config.local_dir : 'cdn';
 var dirPrefix = config.dirPrefix ? config.dirPrefix : '';
@@ -101,6 +107,21 @@ var watch = function () {
 };
 
 /**
+ * 忽略指定文件
+ * @param  {String}  path 文件路径
+ * @return {Boolean}
+ */
+function isIgnoringFiles(path){
+    if (!ignoring_files.length) return false;
+
+    for (var i = 0, l = ignoring_files.length; i < l; i++){
+        if (minimatch(path, ignoring_files[i])) return true;
+    }
+
+    return false;
+}
+
+/**
  * 遍历目录进行上传
  */
 var sync = function (dir) {
@@ -116,7 +137,12 @@ var sync = function (dir) {
             sync(path.join(dir + '', file + ''));
         } else  {
             var name = path.join(dirPrefix, fname.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
-            check_upload(fname,name);
+
+            if (!isIgnoringFiles(name)) {
+                check_upload(fname, name);
+            } else {
+                ignoring_log && log.i(name + ' ignoring.'.yellow);
+            }
         }
     })
 };
