@@ -1,5 +1,5 @@
 var fs = require('fs');
-var qiniu = require('node-qiniu');
+//var qiniu = require('node-qiniu');
 var path = require('path');
 var log = hexo.log;
 
@@ -21,69 +21,117 @@ var update_exist = config.update_exist ? config.update_exist : false;
 var need_upload_nums = 0;
 var scan_mode = false;
 
-// 引入七牛 Node.js SDK
-// 设置全局参数，包括必须的 AccessKey 和 SecretKey，
-qiniu.config({
-  access_key: config.access_key,
-  secret_key: config.secret_key
-});
 
-// 获得空间对象
-var imagesBucket = qiniu.bucket(config.bucket);
+var qiniu = require('qiniu');
 
-/**
- * 上传文件
- * file为本地路径(绝对路径或相对路径都可)
- * name为远程文件名
- */
-var upload_file = function (file,name) {
-    imagesBucket.putFile(name, file, function(err, reply) {
-        if (err) {
-            log.w('Upload err: '.red + err);
-            return console.error(err);
-        }
-        log.i('Upload finished: '.green + reply.key);
-    });
-};
+
+//function initQiniu() {
+  qiniu.conf.ACCESS_KEY = '_u2geldE-bhpSqvR_EsuHjremww_lld_spQdR7P2';
+  qiniu.conf.SECRET_KEY = 'TfMyBU25CKpeu-_KqdVRboNNtI-VZBGw7ZyE-wE0';
+//}
+
+var bucket = config.bucket
+
+//构造上传函数
+function uploadFile(key, localFile) {
+  var putPolicy = new qiniu.rs.PutPolicy(bucket+":"+key);
+  var uptoken = putPolicy.token();
+  var extra = new qiniu.io.PutExtra();
+  log.i(bucket, key, localFile)
+    qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
+      if(!err) {
+        // 上传成功， 处理返回值
+        //console.log(ret.hash, ret.key, ret.persistentId);       
+      } else {
+        // 上传失败， 处理返回代码
+        console.log(err);
+      }
+  });
+}
+
+//构建bucketmanager对象
+var client = new qiniu.rs.Client();
+
+
+
+var qetag = require('./qetag');
+
 
 /**
  * 上传前预先检查
  * file为本地路径(绝对路径或相对路径都可)
  * name为远程文件名
  */
-var check_upload = function (file,name) {
-    var res = imagesBucket.key(name);
-    res.stat(function(err, stat) {
-        if (err) {
-            log.e('get file stat err: '.cyan + name + '\n' + err);
-            return;
-        }
+var check_upload = function (file, name) {
+    //uploadFile(config.bucket, file.replace(/\\/g, '/'), name);
+    
+    //获取文件信息
+    client.stat(config.bucket, name, function(err, ret) {
+        if (!err) {
+            //console.log(ret.hash, ret.fsize, ret.putTime, ret.mimeType);
+            getEtag(file, function (hash) {
+                
+                if(hash != ret.hash){
+                    // 不更新已存在的，忽略
+                    if (!update_exist) {
+                        log.i('Don\'t upload exist file: '.yellow + file);
+                        return;
+                    } 
 
-        getEtag(file, function (hash) {
-            //先判断七牛是否已存在文件
-            if (stat.hash) {
-                if (!update_exist) {
-                    return;
+                    need_upload_nums++;
+                    if (scan_mode) return;
+                    log.i('Need upload update file: '.yellow + file);
+                    uploadFile(name, file);
                 }
-                if (stat.hash != hash) {
-                    res.remove(function(err) {
-                        if (err) {
-                            return console.error(err);
-                        }
-                        need_upload_nums++;
-                        if (scan_mode) return;
-                        log.i('Need upload update file: '.yellow + file);
-                    });
-                    upload_file(file,name);
-                }
-            } else {
+
+            });
+
+        } else {
+            // 文件不存在
+            if(err.code == 612){
                 need_upload_nums++;
                 if (scan_mode) return;
                 log.i('Need upload file: '.yellow + file);
-                upload_file(file,name);
+                uploadFile(name, file);
+            }else{
+                log.e('get file stat err: '.cyan + name + '\n' + err);    
             }
-        });
-    });
+        }
+});
+
+
+    // var res = imagesBucket.key(name);
+    // res.stat(function(err, stat) {
+    //     if (err) {
+    //         log.e('get file stat err: '.cyan + name + '\n' + err);
+    //         return;
+    //     }
+
+    //     getEtag(file, function (hash) {
+    //         //先判断七牛是否已存在文件
+    //         if (stat.hash) {
+    //             if (!update_exist) {
+    //                 return;
+    //             }
+    //             if (stat.hash != hash) {
+    //                 res.remove(function(err) {
+    //                     if (err) {
+    //                         return console.error(err);
+    //                     }
+    //                     need_upload_nums++;
+    //                     if (scan_mode) return;
+    //                     log.i('Need upload update file: '.yellow + file);
+    //                 });
+    //                 uploadFile(file,name);
+    //             }
+    //         } else {
+    //             need_upload_nums++;
+    //             if (scan_mode) return;
+    //             log.i('Need upload file: '.yellow + file);
+    //             uploadFile(file,name);
+    //         }
+    //     });
+    // });
 };
 
 /**
@@ -132,7 +180,7 @@ var sync = function (dir) {
     var files = fs.readdirSync(path.join(local_dir,dir));
     files.forEach(function(file)  {
         var fname = path.join(local_dir + '', dir + '', file + '');
-	var stat = fs.lstatSync(fname);
+    var stat = fs.lstatSync(fname);
         if(stat.isDirectory() == true) {
             sync(path.join(dir + '', file + ''));
         } else  {

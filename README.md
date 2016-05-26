@@ -1,3 +1,6 @@
+[![Latest Stable Version](https://img.shields.io/npm/v/hexo-qiniu-sync.svg)](https://www.npmjs.com/package/hexo-qiniu-sync)
+[![NPM Downloads](https://img.shields.io/npm/dm/hexo-qiniu-sync.svg)](https://npmjs.org/package/hexo-qiniu-sync)
+
 ## 简介
 
 这是一个[hexo](https://github.com/tommy351/hexo)插件，
