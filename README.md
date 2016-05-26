@@ -33,6 +33,7 @@ plugins:
 ##bucket        空间名称.
 ##access_key    上传密钥AccessKey
 ##secret_key    上传密钥SecretKey
+##secret_file   秘钥文件路径，可以将上述两个属性配置到文件内，防止泄露，json格式。绝对路径相对路径均可
 ##dirPrefix     上传的资源子目录前缀.如设置，需与urlPrefix同步 
 ##urlPrefix     外链前缀. 
 ##local_dir     本地目录.
@@ -44,6 +45,7 @@ qiniu:
   offline: false
   sync: true
   bucket: bucket_name
+  secret_file: sec/qn.json or C:
   access_key: AccessKey
   secret_key: SecretKey
   dirPrefix: static

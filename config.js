@@ -1,7 +1,20 @@
 var defaults = require('./default');
 var _ = require('lodash');
 var path = require('path');
+var fs = require('fs');
 var log = hexo.log;
+
+// 如果配置独立秘钥文件，则使用文件里的秘钥配置
+if(hexo.config.qiniu.secret_file){
+	var secPath = path.normalize(path.resolve('', hexo.config.qiniu.secret_file));
+	var qnSec=JSON.parse(fs.readFileSync(secPath,'utf-8'))
+	if(qnSec.secret_key){
+		hexo.config.qiniu.secret_key=qnSec.secret_key;
+	}
+	if(qnSec.access_key){
+		hexo.config.qiniu.access_key=qnSec.access_key;
+	}    
+}
 
 // 七牛的配置组
 var qnConfig = _.defaults(hexo.config.qiniu,defaults);
