@@ -65,8 +65,11 @@ var qetag = require('./qetag');
 var check_upload = function (file, name) {
     //uploadFile(config.bucket, file.replace(/\\/g, '/'), name);
     
+    
+
     //获取文件信息
     client.stat(config.bucket, name, function(err, ret) {
+
         if (!err) {
             //console.log(ret.hash, ret.fsize, ret.putTime, ret.mimeType);
             getEtag(file, function (hash) {
@@ -87,6 +90,7 @@ var check_upload = function (file, name) {
             });
 
         } else {
+
             // 文件不存在
             if(err.code == 612){
                 need_upload_nums++;
@@ -97,7 +101,7 @@ var check_upload = function (file, name) {
                 log.e('get file stat err: '.cyan + name + '\n' + err);    
             }
         }
-});
+    });
 
 
     // var res = imagesBucket.key(name);
@@ -140,15 +144,18 @@ var check_upload = function (file, name) {
  * 其中在每次监听初始化时，遍历到的文件都会触发添加文件事件
  */
 var watch = function () {
+    scan_mode = false;
     log.i('Now start qiniu watch.'.yellow);
     var watcher = chokidar.watch(local_dir, {ignored: /[\/\\]\./, persistent: true});
    
-    watcher.on('add', function( file) {
+    watcher.on('add', function(file, event) {
+        
         var name = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name);
     });
    
-    watcher.on('change', function(file) {
+    watcher.on('change', function(file, event) {
+        
         var name2 = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name2);
     });

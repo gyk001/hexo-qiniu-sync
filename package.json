@@ -1,13 +1,13 @@
 {
   "name": "hexo-qiniu-sync",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "hexo qiniu static files sync plugin",
   "main": "index.js",
   "dependencies": {
-    "chokidar": "^0.12.5",
-    "colors": "^1.1.0",
-    "hexo-util": "^0.1.6",
-    "lodash": "2.2.1",
+    "chokidar": "^1.5.1",
+    "colors": "^1.1.2",
+    "hexo-util": "^0.5.3",
+    "lodash": "4.13.1",
     "minimatch": "^3.0.0",
     "qiniu": "^6.1.11"
   },
