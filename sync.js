@@ -24,11 +24,9 @@ var scan_mode = false;
 
 var qiniu = require('qiniu');
 
+qiniu.conf.ACCESS_KEY = config.access_key;
+qiniu.conf.SECRET_KEY = config.secret_key;
 
-//function initQiniu() {
-  qiniu.conf.ACCESS_KEY = '_u2geldE-bhpSqvR_EsuHjremww_lld_spQdR7P2';
-  qiniu.conf.SECRET_KEY = 'TfMyBU25CKpeu-_KqdVRboNNtI-VZBGw7ZyE-wE0';
-//}
 
 var bucket = config.bucket
 
