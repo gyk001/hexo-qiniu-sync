@@ -1,5 +1,9 @@
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?maxAge=2592000)](https://travis-ci.org/gyk001/hexo-qiniu-sync)
 [![Latest Stable Version](https://img.shields.io/npm/v/hexo-qiniu-sync.svg)](https://www.npmjs.com/package/hexo-qiniu-sync)
 [![NPM Downloads](https://img.shields.io/npm/dm/hexo-qiniu-sync.svg)](https://npmjs.org/package/hexo-qiniu-sync)
+[![Dependency Status](https://david-dm.org/gyk001/hexo-qiniu-sync.svg)](https://david-dm.org/gyk001/hexo-qiniu-sync)
+[![Github Release](https://img.shields.io/github/tag/gyk001/hexo-qiniu-sync.svg)](https://github.com/gyk001/hexo-qiniu-sync/releases)
+[![GitHub stars](https://img.shields.io/github/stars/gyk001/hexo-qiniu-sync.svg?style=social&label=Star)](https://github.com/gyk001/hexo-qiniu-sync)
 
 ## 简介
 
