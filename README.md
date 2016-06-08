@@ -42,7 +42,8 @@ plugins:
 ##secret_key    上传密钥SecretKey
 ##secret_file   秘钥文件路径，可以将上述两个属性配置到文件内，防止泄露，json格式。绝对路径相对路径均可
 ##dirPrefix     上传的资源子目录前缀.如设置，需与urlPrefix同步 
-##urlPrefix     外链前缀. 
+##urlPrefix     外链前缀.
+##up_host      上传服务器路径,如选择华北区域的话配置为http://up-z1.qiniu.com
 ##local_dir     本地目录.
 ##update_exist  是否更新已经上传过的文件(仅文件大小不同或在上次上传后进行更新的才会重新上传)
 ##image/js/css  子参数folder为不同静态资源种类的目录名称，一般不需要改动
@@ -57,6 +58,7 @@ qiniu:
   secret_key: SecretKey
   dirPrefix: static
   urlPrefix: http://bucket_name.qiniudn.com/static
+  up_host: http://upload.qiniu.com
   local_dir: static
   update_exist: true
   image: 

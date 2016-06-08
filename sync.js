@@ -28,6 +28,10 @@ qiniu.conf.ACCESS_KEY = config.access_key;
 qiniu.conf.SECRET_KEY = config.secret_key;
 
 
+if(config.up_host){
+    qiniu.conf.UP_HOST = config.up_host;
+}
+
 var bucket = config.bucket
 
 //构造上传函数
