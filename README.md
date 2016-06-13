@@ -17,9 +17,6 @@ npm install hexo-qiniu-sync --save
 And add this plugin in your ``_config.yml``.
 
 ```
-plugins:
-  - hexo-qiniu-sync
-
 #hexo-qiniu-sync plugin config
 qiniu:
   bucket: gyk001
