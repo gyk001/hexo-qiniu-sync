@@ -1,11 +1,18 @@
 var fs = require('fs');
-var qiniu = require('node-qiniu');
+//var qiniu = require('node-qiniu');
 var path = require('path');
 var log = hexo.log;
+
 var config = require('./config');
 var chokidar = require('chokidar');
+var getEtag = require('./qetag');
+var minimatch = require('minimatch');
+
 var publicDir = hexo.public_dir;
 var sourceDir = hexo.source_dir;
+
+var ignoring_log = config.ignoring_log;
+var ignoring_files = config.ignoring_files || [];
 
 var local_dir = config.local_dir ? config.local_dir : 'cdn';
 var dirPrefix = config.dirPrefix ? config.dirPrefix : '';
@@ -14,67 +21,123 @@ var update_exist = config.update_exist ? config.update_exist : false;
 var need_upload_nums = 0;
 var scan_mode = false;
 
-// 引入七牛 Node.js SDK
-// 设置全局参数，包括必须的 AccessKey 和 SecretKey，
-qiniu.config({
-  access_key: config.access_key,
-  secret_key: config.secret_key
-});
 
-// 获得空间对象
-var imagesBucket = qiniu.bucket(config.bucket);
+var qiniu = require('qiniu');
 
-/**
- * 上传文件
- * file为本地路径(绝对路径或相对路径都可)
- * name为远程文件名
- */
-var upload_file = function (file,name) {
-    imagesBucket.putFile(name, file, function(err, reply) {
-        if (err) {
-            log.w('Upload err: '.red + err);
-            return console.error(err);
-        }
-        log.i('Upload finished: '.green + reply.key);
-    });
-};
+qiniu.conf.ACCESS_KEY = config.access_key;
+qiniu.conf.SECRET_KEY = config.secret_key;
+
+
+if(config.up_host){
+    qiniu.conf.UP_HOST = config.up_host;
+}
+
+var bucket = config.bucket
+
+//构造上传函数
+function uploadFile(key, localFile) {
+  var putPolicy = new qiniu.rs.PutPolicy(bucket+":"+key);
+  var uptoken = putPolicy.token();
+  var extra = new qiniu.io.PutExtra();
+  log.i(bucket, key, localFile)
+    qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
+      if(!err) {
+        // 上传成功， 处理返回值
+        //console.log(ret.hash, ret.key, ret.persistentId);       
+      } else {
+        // 上传失败， 处理返回代码
+        console.log(err);
+      }
+  });
+}
+
+//构建bucketmanager对象
+var client = new qiniu.rs.Client();
+
+
+
+var qetag = require('./qetag');
+
 
 /**
  * 上传前预先检查
  * file为本地路径(绝对路径或相对路径都可)
  * name为远程文件名
  */
-var check_upload = function (file,name) {
-    var res = imagesBucket.key(name);
-    res.stat(function(err, stat) {
-        if (err) {
-            log.e('get file stat err: '.cyan + name + '\n' + err);
-            return;
-        }
-        if (stat.hash) {
-            if (!update_exist) {
-                return;
-            }
-            fsstat = fs.lstatSync(file);
-            var ftime = new Date(fsstat.mtime).getTime()*1000;
-            if (fsstat.size != stat.fsize || ftime > stat.putTime) {
-                res.remove(function(err) {
-                    if (err) {
-                        return console.error(err);
-                    }
+var check_upload = function (file, name) {
+    //uploadFile(config.bucket, file.replace(/\\/g, '/'), name);
+    
+    
+
+    //获取文件信息
+    client.stat(config.bucket, name, function(err, ret) {
+
+        if (!err) {
+            //console.log(ret.hash, ret.fsize, ret.putTime, ret.mimeType);
+            getEtag(file, function (hash) {
+                
+                if(hash != ret.hash){
+                    // 不更新已存在的，忽略
+                    if (!update_exist) {
+                        log.i('Don\'t upload exist file: '.yellow + file);
+                        return;
+                    } 
+
                     need_upload_nums++;
                     if (scan_mode) return;
                     log.i('Need upload update file: '.yellow + file);
-                });
-                upload_file(file,name);
-            }
+                    uploadFile(name, file);
+                }
+
+            });
+
         } else {
-            need_upload_nums++;
-            if (scan_mode) return;
-            log.i('Need upload file: '.yellow + file);
-            upload_file(file,name);
+
+            // 文件不存在
+            if(err.code == 612){
+                need_upload_nums++;
+                if (scan_mode) return;
+                log.i('Need upload file: '.yellow + file);
+                uploadFile(name, file);
+            }else{
+                log.e('get file stat err: '.cyan + name + '\n' + err);    
+            }
         }
     });
+
+
+    // var res = imagesBucket.key(name);
+    // res.stat(function(err, stat) {
+    //     if (err) {
+    //         log.e('get file stat err: '.cyan + name + '\n' + err);
+    //         return;
+    //     }
+
+    //     getEtag(file, function (hash) {
+    //         //先判断七牛是否已存在文件
+    //         if (stat.hash) {
+    //             if (!update_exist) {
+    //                 return;
+    //             }
+    //             if (stat.hash != hash) {
+    //                 res.remove(function(err) {
+    //                     if (err) {
+    //                         return console.error(err);
+    //                     }
+    //                     need_upload_nums++;
+    //                     if (scan_mode) return;
+    //                     log.i('Need upload update file: '.yellow + file);
+    //                 });
+    //                 uploadFile(file,name);
+    //             }
+    //         } else {
+    //             need_upload_nums++;
+    //             if (scan_mode) return;
+    //             log.i('Need upload file: '.yellow + file);
+    //             uploadFile(file,name);
+    //         }
+    //     });
+    // });
 };
 
 /**
@@ -83,19 +146,37 @@ var check_upload = function (file,name) {
  * 其中在每次监听初始化时，遍历到的文件都会触发添加文件事件
  */
 var watch = function () {
+    scan_mode = false;
     log.i('Now start qiniu watch.'.yellow);
     var watcher = chokidar.watch(local_dir, {ignored: /[\/\\]\./, persistent: true});
    
-    watcher.on('add', function( file) {
+    watcher.on('add', function(file, event) {
+        
         var name = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name);
     });
    
-    watcher.on('change', function(file) {
+    watcher.on('change', function(file, event) {
+        
         var name2 = path.join(dirPrefix, file.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
         check_upload(file, name2);
     });
 };
+
+/**
+ * 忽略指定文件
+ * @param  {String}  path 文件路径
+ * @return {Boolean}
+ */
+function isIgnoringFiles(path){
+    if (!ignoring_files.length) return false;
+
+    for (var i = 0, l = ignoring_files.length; i < l; i++){
+        if (minimatch(path, ignoring_files[i])) return true;
+    }
+
+    return false;
+}
 
 /**
  * 遍历目录进行上传
@@ -105,17 +186,22 @@ var sync = function (dir) {
         dir='';
         log.i('Now start qiniu sync.'.yellow);
     }
-    var files = fs.readdirSync(path.join(local_dir, dir));
-    for(i in files) {
-        var fname = path.join(local_dir, dir, files[i]);
-        var stat = fs.lstatSync(fname);
+    var files = fs.readdirSync(path.join(local_dir,dir));
+    files.forEach(function(file)  {
+        var fname = path.join(local_dir + '', dir + '', file + '');
+    var stat = fs.lstatSync(fname);
         if(stat.isDirectory() == true) {
-            sync(path.join(dir, files[i]));
+            sync(path.join(dir + '', file + ''));
         } else  {
             var name = path.join(dirPrefix, fname.replace(local_dir, '')).replace(/\\/g, '/').replace(/^\//g, '');
-            check_upload(fname,name);
+
+            if (!isIgnoringFiles(name)) {
+                check_upload(fname, name);
+            } else {
+                ignoring_log && log.i(name + ' ignoring.'.yellow);
+            }
         }
-    }
+    })
 };
 
 /**

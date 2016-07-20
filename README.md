@@ -1,24 +1,34 @@
-## Introduction
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg?maxAge=2592000)](https://travis-ci.org/gyk001/hexo-qiniu-sync)
+[![Latest Stable Version](https://img.shields.io/npm/v/hexo-qiniu-sync.svg)](https://www.npmjs.com/package/hexo-qiniu-sync)
+[![NPM Downloads](https://img.shields.io/npm/dm/hexo-qiniu-sync.svg)](https://npmjs.org/package/hexo-qiniu-sync)
+[![Dependency Status](https://david-dm.org/gyk001/hexo-qiniu-sync.svg)](https://david-dm.org/gyk001/hexo-qiniu-sync)
+[![Github Release](https://img.shields.io/github/tag/gyk001/hexo-qiniu-sync.svg)](https://github.com/gyk001/hexo-qiniu-sync/releases)
+[![GitHub stars](https://img.shields.io/github/stars/gyk001/hexo-qiniu-sync.svg?style=social&label=Star)](https://github.com/gyk001/hexo-qiniu-sync)
 
-This is a [hexo](https://github.com/tommy351/hexo)
-tag plugin which help you to embed static file stored on [qiniu](http://www.qiniu.com/)
+## 简介
 
-**The point is you don't need upload files to qiniu manual**
+这是一个[hexo](https://github.com/tommy351/hexo)插件，
+可以让你在文档中入嵌存储在七牛上的图片、JS、CSS类型的静态文件。
 
-**this plugin will sync files to qiniu for you automatically**
+**你可以不用手动上传文件到七牛，插件会自动帮你将本地目录的文件同步到七牛。**
 
+**项目作者：[gyk001](http://www.guoyukun.cn)**  
+**代码贡献（排名不分先后）:**
+  - [binsee](https://github.com/binsee)
+  - [楼教主](https://github.com/52cik)
+  - [robinshen](https://github.com/robinshen)
+  - [Bob Liu](https://github.com/MatrixHero)
+  - [Jinchun Xia](https://github.com/xiajinchun)
 
-**author：[gyk001](http://www.guoyukun.cn)**
-**contributors：[binsee](https://github.com/binsee)**
+## 安装
 
-## Installation
+在你的hexo主目录下运行以下命令进行安装：
 
-To install, run the following command in the root directory of hexo:
 ```
 npm install hexo-qiniu-sync --save
 ```
 
-And add this plugin in your ``_config.yml``.
+添加插件配置信息到 ``_config.yml`` 文件中:
 
 ```
 plugins:
@@ -30,8 +40,10 @@ plugins:
 ##bucket        空间名称.
 ##access_key    上传密钥AccessKey
 ##secret_key    上传密钥SecretKey
+##secret_file   秘钥文件路径，可以将上述两个属性配置到文件内，防止泄露，json格式。绝对路径相对路径均可
 ##dirPrefix     上传的资源子目录前缀.如设置，需与urlPrefix同步 
-##urlPrefix     外链前缀. 
+##urlPrefix     外链前缀.
+##up_host      上传服务器路径,如选择华北区域的话配置为http://up-z1.qiniu.com
 ##local_dir     本地目录.
 ##update_exist  是否更新已经上传过的文件(仅文件大小不同或在上次上传后进行更新的才会重新上传)
 ##image/js/css  子参数folder为不同静态资源种类的目录名称，一般不需要改动
@@ -41,10 +53,12 @@ qiniu:
   offline: false
   sync: true
   bucket: bucket_name
+  secret_file: sec/qn.json or C:
   access_key: AccessKey
   secret_key: SecretKey
   dirPrefix: static
   urlPrefix: http://bucket_name.qiniudn.com/static
+  up_host: http://upload.qiniu.com
   local_dir: static
   update_exist: true
   image: 
@@ -91,7 +105,7 @@ qiniu:
 例如 `?imageView2/2/w/500` 即生成宽度最多500px的缩略图。
 
 
-## Usage
+## 使用标签
 
 ```
 {% qnimg imageFile attr1:value1 attr2:value2 'attr3:value31 value32 value3n' [extend:?imageView2/2/w/600 | normal:yes] %}
@@ -113,7 +127,7 @@ qiniu:
 {% qnimg test/demo.png title:图片标题 alt:图片说明 'class:class1 class2' extend:?imageView2/2/w/600 %}
 ``` 
 
-will render to:
+将会被渲染成：
 
 ```
 <img title="图片标题" alt="图片说明" class="class1 class2" src="http://gyk001.u.qiniudn.com/images/test/demo.png?imageView2/2/w/600">
