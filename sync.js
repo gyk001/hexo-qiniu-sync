@@ -7,6 +7,7 @@ var config = require('./config');
 var chokidar = require('chokidar');
 var getEtag = require('./qetag');
 var minimatch = require('minimatch');
+var processor = require('process')
 
 var publicDir = hexo.public_dir;
 var sourceDir = hexo.source_dir;
@@ -14,9 +15,13 @@ var sourceDir = hexo.source_dir;
 var ignoring_log = config.ignoring_log;
 var ignoring_files = config.ignoring_files || [];
 
-var local_dir = config.local_dir ? config.local_dir : 'cdn';
+var local_dir_name= config.local_dir ? config.local_dir : 'cdn';
 var dirPrefix = config.dirPrefix ? config.dirPrefix : '';
-local_dir = path.join(local_dir, '.').replace(/[\\\/]/g, path.sep);
+local_dir_name = path.join(local_dir_name, '.').replace(/[\\\/]/g, path.sep);
+var local_dir = local_dir_name;
+if (!path.isAbsolute(local_dir)) {
+    local_dir = path.join(processor.cwd(),local_dir_name)
+}
 var update_exist = config.update_exist ? config.update_exist : false;
 var need_upload_nums = 0;
 var scan_mode = false;
@@ -232,8 +237,9 @@ var scan_end = function () {
  * 链接目录
  */
 var symlink = function (publicdir){
-    var dirpath = path.join(publicdir ? publicDir : sourceDir, local_dir);
-    fs.exists(dirpath, function(exists){
+    var dirpath = path.join(publicdir ? publicDir : sourceDir, local_dir_name);
+	
+	fs.exists(dirpath, function(exists){
         if (!exists) {
             fs.symlinkSync(local_dir, dirpath, 'junction');
             if (!fs.existsSync(dirpath)) {
