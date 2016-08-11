@@ -236,23 +236,31 @@ var scan_end = function () {
 /**
  * 链接目录
  */
-var symlink = function (publicdir){
-    var dirpath = path.join(publicdir ? publicDir : sourceDir, local_dir_name);
-	
-	fs.exists(dirpath, function(exists){
-        if (!exists) {
-            fs.symlinkSync(local_dir, dirpath, 'junction');
-            if (!fs.existsSync(dirpath)) {
-                log.e('Can\'t make link fail!'.red);
-                log.w('Maybe do not have permission.'.red);
-                if (process.platform === 'win32') {
-                    log.e('Please ensure that run in administrator mode!'.red);
-                }
-            }
-        } else {
-            log.w('Dir exists,can\'t symlink:'.red + dirpath);
+var symlink = function (isPublicDir){
+    console.log(sourceDir)
+    console.log(publicDir)
+    console.log(local_dir_name)
+    var dirpath = path.join(isPublicDir ? publicDir : sourceDir, local_dir_name);
+
+    if( fs.existsSync(dirpath)){
+        log.w('Dir exists,can\'t symlink:'.red + dirpath);
+        return ;
+    }
+    // 确保父目录存在
+    var parent = path.resolve(dirpath, '..');
+    if( ! fs.existsSync(parent)){
+        fs.mkdirSync(parent)
+    }
+
+    fs.symlinkSync(local_dir, dirpath, 'junction');
+    if (!fs.existsSync(dirpath)) {
+        log.e('Can\'t make link fail!'.red);
+        log.w('Maybe do not have permission.'.red);
+        if (process.platform === 'win32') {
+            log.e('Please ensure that run in administrator mode!'.red);
         }
-    });
+    }
+      
 };
 
 /**
