@@ -237,9 +237,6 @@ var scan_end = function () {
  * 链接目录
  */
 var symlink = function (isPublicDir){
-    console.log(sourceDir)
-    console.log(publicDir)
-    console.log(local_dir_name)
     var dirpath = path.join(isPublicDir ? publicDir : sourceDir, local_dir_name);
 
     if( fs.existsSync(dirpath)){
