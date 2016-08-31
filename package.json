@@ -1,6 +1,6 @@
 {
   "name": "hexo-qiniu-sync",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "hexo qiniu static files sync plugin",
   "main": "index.js",
   "dependencies": {
