@@ -63,18 +63,18 @@ var qnJsTag = function(args,content){
   var jsName = args[0]; 
   var jsAttr = parseAttrs(args);
 
-  js.src  = [jsPrefix,'/', jsName].join('');
-  js.type = 'text/javascript';
+  jsAttr.src  = [jsPrefix,'/', jsName].join('');
+  jsAttr.type = 'text/javascript';
   return htmlTag('script', jsAttr);
 };
 
 var qnCssTag = function(args,content){
-  var jsName = args[0]; 
+  var cssName = args[0]; 
   var jsAttr = parseAttrs(args);
-  js.src  = [cssPrefix,'/', cssName].join('');
-  js.rel = 'stylesheet';
-  js.type = 'text/css';
-  return htmlTag('link', jsAttr);
+  cssName.src  = [cssPrefix,'/', cssName].join('');
+  cssName.rel = 'stylesheet';
+  cssName.type = 'text/css';
+  return htmlTag('link', cssName);
 };
 
 var qnJsHelper = function(path){
