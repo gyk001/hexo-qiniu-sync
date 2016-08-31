@@ -70,11 +70,11 @@ var qnJsTag = function(args,content){
 
 var qnCssTag = function(args,content){
   var cssName = args[0]; 
-  var jsAttr = parseAttrs(args);
-  cssName.src  = [cssPrefix,'/', cssName].join('');
-  cssName.rel = 'stylesheet';
-  cssName.type = 'text/css';
-  return htmlTag('link', cssName);
+  var cssAttr = parseAttrs(args);
+  cssAttr.src  = [cssPrefix,'/', cssName].join('');
+  cssAttr.rel = 'stylesheet';
+  cssAttr.type = 'text/css';
+  return htmlTag('link', cssAttr);
 };
 
 var qnJsHelper = function(path){
