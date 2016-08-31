@@ -13,12 +13,15 @@
 **你可以不用手动上传文件到七牛，插件会自动帮你将本地目录的文件同步到七牛。**
 
 **项目作者：[gyk001](http://www.guoyukun.cn)**  
-**代码贡献（排名不分先后）:**
-  - [binsee](https://github.com/binsee)
-  - [楼教主](https://github.com/52cik)
-  - [robinshen](https://github.com/robinshen)
+**代码贡献（字母序排列）:**
   - [Bob Liu](https://github.com/MatrixHero)
   - [Jinchun Xia](https://github.com/xiajinchun)
+  - [MatrixHero](https://github.com/MatrixHero)
+  - [binsee](https://github.com/binsee)
+  - [javy-liu](https://github.com/javy-liu)
+  - [k1988](https://github.com/k1988)
+  - [robinshen](https://github.com/robinshen)
+  - [楼教主](https://github.com/52cik)
 
 ## 安装
 

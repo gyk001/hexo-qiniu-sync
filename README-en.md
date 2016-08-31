@@ -9,12 +9,15 @@ tag plugin which help you to embed static file stored on [qiniu](http://www.qini
 
 
 **author：[gyk001](http://www.guoyukun.cn)**
-**contributors：**
-  - [binsee](https://github.com/binsee)
-  - [楼教主](https://github.com/52cik)
-  - [robinshen](https://github.com/robinshen)
+**代码贡献（字母序排列）:**
   - [Bob Liu](https://github.com/MatrixHero)
   - [Jinchun Xia](https://github.com/xiajinchun)
+  - [MatrixHero](https://github.com/MatrixHero)
+  - [binsee](https://github.com/binsee)
+  - [javy-liu](https://github.com/javy-liu)
+  - [k1988](https://github.com/k1988)
+  - [robinshen](https://github.com/robinshen)
+  - [楼教主](https://github.com/52cik)
 
 ## Installation
 
