@@ -34,9 +34,6 @@ npm install hexo-qiniu-sync --save
 添加插件配置信息到 ``_config.yml`` 文件中:
 
 ```
-plugins:
-  - hexo-qiniu-sync
-
 #七牛云存储设置
 ##offline       是否离线. 离线状态将使用本地地址渲染
 ##sync          是否同步
@@ -72,7 +69,11 @@ qiniu:
   css:
     folder: css
 ```
-
+注意，不要在plugins下面添加hexo-qiniu-sync的配置项，否则会导致错误，详见 #41
+```
+plugins:
+  - hexo-qiniu-sync
+```
 **这里对配置中的几个需要注意的参数进行说明：**  
 
 * `offline` 参数：  
