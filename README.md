@@ -69,7 +69,7 @@ qiniu:
   css:
     folder: css
 ```
-注意，不要在plugins下面添加hexo-qiniu-sync的配置项，否则会导致错误，详见 #41
+注意，不要在plugins下面添加hexo-qiniu-sync的配置项，否则会导致错误，详见 https://github.com/gyk001/hexo-qiniu-sync/issues/41#issuecomment-279229378
 ```
 plugins:
   - hexo-qiniu-sync
